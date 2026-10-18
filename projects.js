@@ -29,10 +29,10 @@ const PROYECTOS = [
     categoria: "3D",
     año: 2026,
     descripcion: "giving a new look from stratocaster to something more heavy",
-    portada: "assets/5.jpg",
-    preview: "assets/vid1.mp4",
+    portada: "assets/1.jpg",
+    preview: "",
     video: "",
-    galeria: ["assets/1.jpg","assets/2.jpg","assets/3.jpg","assets/4.jpg"],
+    galeria: [""],
     destacado: true
   },
   {
