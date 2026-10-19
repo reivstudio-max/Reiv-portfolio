@@ -55,7 +55,7 @@ hero.addEventListener("click", e => {
   const d = e.target.closest("[data-d]");
   if (d){ mostrar(+d.dataset.d); auto(); return; }
   const s = e.target.closest(".slide");
-  if (s) abrir(dest[+s.dataset.i]);
+  if (s) abrir(dest[+s.dataset.i], s.querySelector(".bg"));
 });
 if (dest.length){ mostrar(0); auto(); }
 
@@ -75,33 +75,98 @@ $("filtros").addEventListener("click", e=>{
   pintar(b.dataset.c);
 });
 $("grid").addEventListener("click", e=>{
-  const c = e.target.closest(".card"); if(c) abrir(PROYECTOS[+c.dataset.t]);
+  const c = e.target.closest(".card"); if(c) abrir(PROYECTOS[+c.dataset.t], c.querySelector(".img"));
 });
 pintar("Todos");
 
-/* ---------- VENTANA DE PROYECTO ---------- */
-function embed(url){
-  let m = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
-  if (m) return `<iframe src="https://www.youtube.com/embed/${m[1]}?autoplay=1" allow="autoplay;fullscreen" allowfullscreen></iframe>`;
-  m = url.match(/vimeo\.com\/(\d+)/);
-  if (m) return `<iframe src="https://player.vimeo.com/video/${m[1]}?autoplay=1" allow="autoplay;fullscreen" allowfullscreen></iframe>`;
-  return `<video src="${url}" controls autoplay playsinline></video>`;
+/* ---------- VENTANA DE PROYECTO ----------
+   P1: al abrir, la imagen de la tarjeta (o del hero) "vuela" hasta la cabecera de la ventana
+   y al cerrar vuelve a su lugar. Usa la View Transitions API del navegador (sin librerías).
+   Sin soporte: fundido con CSS. Con "reducir movimiento": solo un fundido corto. */
+const VT = !!document.startViewTransition;
+const QUIETO = matchMedia("(prefers-reduced-motion: reduce)");
+document.documentElement.classList.toggle("vt", VT);
+let origen = null, obsGal = null;
+
+function transicion(cambio){
+  if (!VT) { cambio(); return Promise.resolve(); }
+  return document.startViewTransition(cambio).finished.catch(()=>{});
 }
-function abrir(p){
-  let medios = "";
-  if (p.video) medios += embed(p.video);
-  // onerror: si una imagen no existe se quita en vez de mostrar un ícono roto
-  if (p.portada && !p.video) medios += `<img src="${p.portada}" alt="${p.titulo}" onerror="this.remove()">`;
-  p.galeria.forEach(g => medios += `<img src="${g}" alt="${p.titulo}" loading="lazy" onerror="this.remove()">`);
-  if (!medios) medios = `<div class="vacio" style="background:${RELLENO[p.categoria]}">${p.titulo}</div>`;
-  $("caja").innerHTML = medios + `<div class="tag">${CATS[p.categoria]} — ${p.año}</div><h2 class="display">${p.titulo}</h2><p>${p.descripcion||""}</p>`;
-  $("modal").classList.add("on");
-  document.body.style.overflow = "hidden";
+// Marca el elemento que viaja (solo uno a la vez puede tener el nombre)
+function nombrar(el, si){
+  if (el) el.style.viewTransitionName = si && !QUIETO.matches ? "proyecto-img" : "";
+}
+// Si la imagen de cabecera no existe, se cambia por el degradado con el título
+function fallo(img){
+  const d = document.createElement("div");
+  d.className = "vacio medio";
+  d.style.cssText = img.style.cssText + ";background:" + img.dataset.r;
+  d.textContent = img.alt;
+  img.replaceWith(d);
+}
+
+function embed(url){
+  const listo = `this.parentNode.classList.add('listo')`;   // quita la portada cuando el video ya cargó
+  let m = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+  if (m) return `<iframe src="https://www.youtube.com/embed/${m[1]}?autoplay=1" allow="autoplay;fullscreen" allowfullscreen onload="${listo}"></iframe>`;
+  m = url.match(/vimeo\.com\/(\d+)/);
+  if (m) return `<iframe src="https://player.vimeo.com/video/${m[1]}?autoplay=1" allow="autoplay;fullscreen" allowfullscreen onload="${listo}"></iframe>`;
+  return `<video src="${url}" controls autoplay playsinline onloadeddata="${listo}"></video>`;
+}
+
+function pintarModal(p){
+  const galeria = p.galeria.slice();
+  const portada = p.portada || (!p.video && galeria.shift()) || "";
+  let cabeza;
+  // Con video: la portada queda de "póster" debajo hasta que el reproductor carga
+  if (p.video) cabeza = `<div class="medio" style="background-image:${fondo(p)}">${embed(p.video)}</div>`;
+  else if (portada) cabeza = `<img class="medio" src="${portada}" alt="${p.titulo}" data-r="${RELLENO[p.categoria]}" onerror="fallo(this)">`;
+  else cabeza = `<div class="vacio medio" style="background:${RELLENO[p.categoria]}">${p.titulo}</div>`;
+  // onerror: si una imagen de la galería no existe se quita en vez de mostrar un ícono roto
+  const fotos = galeria.map(g => `<img class="gal" src="${g}" alt="${p.titulo}" loading="lazy" onerror="this.remove()">`).join("");
+  $("caja").innerHTML = cabeza + fotos + `<div class="tag">${CATS[p.categoria]} — ${p.año}</div><h2 class="display">${p.titulo}</h2><p>${p.descripcion||""}</p>`;
+  return $("caja").querySelector(".medio");
+}
+
+// Las fotos de la galería aparecen subiendo, una tras otra, al entrar en pantalla
+function observarGaleria(){
+  const fotos = $("caja").querySelectorAll(".gal");
+  if (!("IntersectionObserver" in window)) { fotos.forEach(f => f.classList.add("visto")); return; }
+  if (obsGal) obsGal.disconnect();
+  obsGal = new IntersectionObserver(es => {
+    es.filter(e => e.isIntersecting).forEach((e,n) => {
+      e.target.style.transitionDelay = n*80 + "ms";
+      e.target.classList.add("visto");
+      obsGal.unobserve(e.target);
+    });
+  }, { root: $("modal"), rootMargin: "0px 0px -8% 0px" });
+  fotos.forEach(f => obsGal.observe(f));
+}
+
+function abrir(p, el){
+  if ($("modal").classList.contains("on")) return;
+  clearInterval(timer);                 // el hero no cambia de slide mientras la ventana está abierta
+  origen = el || null;
+  nombrar(origen, true);
+  transicion(() => {
+    nombrar(origen, false);
+    nombrar(pintarModal(p), true);
+    $("modal").scrollTop = 0;
+    $("modal").classList.add("on");
+    document.body.style.overflow = "hidden";
+    observarGaleria();
+  });
 }
 function cerrar(){
-  $("modal").classList.remove("on");
-  $("caja").innerHTML = "";           // detiene videos
-  document.body.style.overflow = "";
+  if (!$("modal").classList.contains("on")) return;
+  transicion(() => {
+    $("modal").classList.remove("on");
+    $("caja").innerHTML = "";           // detiene videos (la animación usa una "foto" previa)
+    document.body.style.overflow = "";
+    if (obsGal) obsGal.disconnect();
+    nombrar(origen, true);              // la imagen vuelve a su tarjeta
+  }).then(() => { nombrar(origen, false); origen = null; });
+  if (dest.length) auto();
 }
 $("cerrar").onclick = cerrar;
 document.addEventListener("keydown", e => { if(e.key==="Escape") cerrar(); });
