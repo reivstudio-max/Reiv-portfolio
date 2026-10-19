@@ -85,14 +85,60 @@ ffmpeg -ss 00:00:10 -t 6 -i reel.mp4 -vf "scale=-2:720,fps=24" -an -c:v libx264 
 
 ---
 
+## Cómo trabajamos (equipo y flujo)
+
+- **Equipo:** el creador del repo (diseñador gráfico, sube contenido) y colaboradores que programan
+  (p. ej. JJDA1057), apoyados por asistentes de IA (Claude Code).
+- **Ramas:** nunca se trabaja directo en `main`. Cada tarea va en su rama desde `main` actualizado:
+  `fix/...` (arreglos), `feat/...` (funciones nuevas), `docs/...` (documentación).
+- **PRs separados:** el equipo prefiere **un PR para código y otro para documentación**.
+  Si el PR de docs describe un cambio de código, se mergea primero el de código.
+- **Abrir PRs:** en la máquina actual no está instalado `gh`. Se hace push de la rama y se abre el PR
+  con el link `https://github.com/reivstudio-max/Reiv-portfolio/pull/new/<rama>`.
+  (Para abrirlos desde la terminal: `sudo pacman -S github-cli` y `gh auth login`.)
+- **Probar en local:** `python3 -m http.server 8000 --bind 127.0.0.1` y abrir http://127.0.0.1:8000
+  (recargar con Ctrl+Shift+R para evitar la caché). Para capturas automáticas se usa Chromium headless:
+  `chromium --headless=new --window-size=1280,900 --screenshot=salida.png http://127.0.0.1:8000`.
+- **Al terminar una tarea:** actualizar "Problemas conocidos" y "Estado y próximos pasos" de este README.
+
+### Historial de PRs
+| PR | Rama | Qué hizo |
+|---|---|---|
+| #1 | `docs/contexto-proyecto` | Documentación base: objetivo, reglas, estrategia de medios, problemas y estado. Creó `CLAUDE.md` |
+| #2 | `fix/rutas-y-robustez` | Corrigió rutas rotas en `projects.js`; `script.js` limpia rutas (espacios, `assets/` faltante, vacíos) y usa el degradado de la categoría si una imagen no existe |
+| #3 | `docs/estado-rutas` | Marcó las rutas rotas como resueltas en este README |
+| (este) | `docs/agentes-y-guia` | Agente `animaciones`, sección de flujo de trabajo, historial y próximos pasos |
+
+---
+
+## Agentes de IA del proyecto
+
+Están en `.claude/agents/` y Claude Code los carga automáticamente al abrir el repo
+(si no aparecen, reiniciar Claude Code o revisar `/agents`). Se invocan por nombre, p. ej.:
+*"Usa el agente animaciones para proponer ideas para el hero"*.
+
+| Agente | Archivo | Para qué |
+|---|---|---|
+| `animaciones` | `.claude/agents/animaciones.md` | Motion design con foco en rendimiento. **Modo ideas:** propone animaciones ordenadas por impacto/costo (qué se ve, técnica, peso, comportamiento en celular) y pide aprobación. **Modo implementación:** trabaja en rama `feat/animaciones-...`, mide con Lighthouse/Chromium antes y después y actualiza el README |
+
+Reglas que sigue `animaciones`: CSS primero → scroll-driven/View Transitions → CSS 3D → JS (rAF) →
+WebGL solo para un efecto estrella cargado de forma diferida y con respaldo estático. Anima solo
+`transform`/`opacity`, pausa todo fuera de pantalla, respeta `prefers-reduced-motion`.
+Presupuesto: < ~15 KB de JS extra en la carga inicial, Lighthouse móvil ≥ 90, 60 fps.
+
+---
+
 ## Estado y próximos pasos
 
 **Hecho**
 - [x] Sitio base funcionando (hero, filtros, grilla, modal, contacto).
 - [x] Estrategia de hosting y medios a costo cero definida (ver arriba).
-- [x] Rutas corregidas y limpieza automática de datos en `script.js`.
+- [x] Rutas corregidas y limpieza automática de datos en `script.js` (PR #2).
+- [x] Flujo de trabajo documentado y agente `animaciones` creado.
 
 **Siguiente (en este orden)**
+- [ ] **Animaciones:** lanzar el agente `animaciones` en modo ideas para hero, grilla y modal;
+      elegir propuestas y luego implementarlas (PR de código + PR de docs).
 - [ ] Miniatura automática de YouTube cuando un proyecto tiene `video` de YouTube pero no `portada`
       (`https://img.youtube.com/vi/ID/maxresdefault.jpg`).
 - [ ] Reproducir `preview` en las tarjetas de la grilla al pasar el mouse (y en celular al entrar en pantalla),
