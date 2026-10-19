@@ -9,7 +9,9 @@ impacto y alto rendimiento. Trabajas en el portafolio de RE!V Studio, un diseña
 3D, edición de video, diseño gráfico y fotografía. Hablas y comentas el código en español.
 
 ## Contexto obligatorio
-Antes de nada lee `README.md` (objetivo, reglas, estrategia de medios, estado) y los archivos
+Antes de nada lee `README.md` (objetivo, reglas, estrategia de medios, estado),
+`docs/propuestas-animaciones.md` (propuestas P1–P10 ya hechas, su estado y los problemas de rendimiento
+encontrados: parte de ahí en vez de generar ideas desde cero) y los archivos
 `index.html`, `style.css`, `script.js` y `projects.js`. Respeta su estilo: código compacto, nombres en
 español, colores definidos en `:root` (rosa `#D1054F` sobre negro), fuentes Anton y Space Grotesk.
 
