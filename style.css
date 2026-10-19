@@ -7,7 +7,7 @@
   --blanco:#ffffff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scrollbar-gutter:stable}   /* stable: la página no salta al abrir la ventana */
 body{background:var(--negro);color:var(--blanco);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 b{color:var(--rosa)}
@@ -67,12 +67,44 @@ nav a:hover{opacity:1;color:var(--rosa)}
 .modal{position:fixed;inset:0;background:#000f;z-index:100;display:none;overflow:auto;padding:80px 4vw 50px}
 .modal.on{display:block}
 .cerrar{position:fixed;top:18px;right:4vw;z-index:101;background:var(--rosa);color:#fff;border:0;width:44px;height:44px;font-size:18px;cursor:pointer}
-.caja{max-width:1100px;margin:auto}
+/* La cabecera usa todo el espacio de la pantalla; la galería y el texto siguen en una columna legible */
+.caja .gal,.caja .texto{max-width:1100px;margin-left:auto;margin-right:auto}
 .caja img,.caja video,.caja iframe{width:100%;display:block;margin-bottom:14px;background:#111}
 .caja iframe{aspect-ratio:16/9;border:0}
 .caja h2{font-size:clamp(40px,7vw,90px);margin:10px 0 16px}
 .caja p{opacity:.8;line-height:1.6;max-width:700px;margin-bottom:26px}
 .caja .vacio{aspect-ratio:16/9;display:grid;place-items:center;margin-bottom:14px;font-family:'Anton',Impact,sans-serif;font-size:clamp(30px,6vw,80px)}
+
+/* Cabecera de la ventana: lo más grande posible sin salirse de la pantalla (alto y ancho),
+   centrada y sin recortes. 110px = espacio del botón cerrar arriba + un respiro abajo */
+.caja .medio{max-width:100%;max-height:calc(100svh - 110px);margin-left:auto;margin-right:auto}
+.caja img.medio{width:auto;height:auto}
+.caja div.medio{width:min(100%,calc((100svh - 110px) * 16 / 9))}
+/* Con video, la portada se ve de "póster" hasta que el reproductor carga */
+.caja div.medio{position:relative;aspect-ratio:16/9;margin-bottom:14px;background:#111 center/cover}
+.caja div.medio iframe,.caja div.medio video{position:absolute;inset:0;height:100%;margin:0;object-fit:contain;opacity:0;transition:opacity .4s}
+.caja div.medio.listo iframe,.caja div.medio.listo video{opacity:1}
+
+/* P1: la imagen viaja de la tarjeta a la ventana (View Transitions) */
+::view-transition-group(proyecto-img){animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+::view-transition-old(proyecto-img),::view-transition-new(proyecto-img){height:100%;object-fit:cover}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+/* Navegadores sin View Transitions: fundido y leve escala */
+html:not(.vt) .modal.on{animation:aparece .3s both}
+html:not(.vt) .modal.on .caja{animation:acerca .35s both}
+@keyframes aparece{from{opacity:0}}
+@keyframes acerca{from{transform:translateY(20px) scale(.98)}}
+
+/* Galería: las fotos suben con fundido al entrar en pantalla */
+.caja .gal{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.caja .gal.visto{opacity:1;transform:none}
+
+/* Quien pide "reducir movimiento" en su sistema: solo fundidos cortos */
+@media (prefers-reduced-motion: reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation-duration:.15s!important}
+  html:not(.vt) .modal.on .caja{animation:none}
+  .caja .gal{transform:none;transition:opacity .3s}
+}
 
 /* Contacto */
 footer{padding:90px 4vw 40px;border-top:1px solid var(--borde)}
