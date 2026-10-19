@@ -75,10 +75,9 @@ ffmpeg -ss 00:00:10 -t 6 -i reel.mp4 -vf "scale=-2:720,fps=24" -an -c:v libx264 
 
 1. **Archivos faltantes en `assets/`.** Solo existe `assets/1.jpg`. `projects.js` referencia
    `d.jpg`, `p(1).jpg`…`p(20).jpg`, `1IGRetocada.png`, `2IGRetocada.png` y `paig.mp4`, que no están en el repo.
-2. **Rutas mal escritas en `projects.js`:**
-   - "Reel de edición": `portada: "1.jpg"` → falta `assets/`.
-   - "Palmas": `portada: "assets/d.jpg  "` → espacios al final.
-   - "New Guitar Concept": `galeria: [""]` → genera una imagen rota en el modal.
+2. ~~Rutas mal escritas en `projects.js`~~ — **resuelto** (oct 2026). Además `script.js` ahora tolera estos errores
+   solo: quita espacios sobrantes, agrega `assets/` si falta, ignora entradas vacías en `galeria`, y si una imagen
+   no existe muestra el degradado de la categoría (tarjetas/hero) o la oculta (modal).
 3. **Datos de contacto de ejemplo** en `PERFIL` (`tucorreo@ejemplo.com`, redes `tuusuario`).
 4. **Proyectos de relleno** sin contenido ("Spot publicitario", "Poster concierto", "Retratos", "Identidad de marca").
 5. Nombres con paréntesis (`p(1).jpg`) pueden romper `url('...')` en CSS. Renombrar.
@@ -91,9 +90,9 @@ ffmpeg -ss 00:00:10 -t 6 -i reel.mp4 -vf "scale=-2:720,fps=24" -an -c:v libx264 
 **Hecho**
 - [x] Sitio base funcionando (hero, filtros, grilla, modal, contacto).
 - [x] Estrategia de hosting y medios a costo cero definida (ver arriba).
+- [x] Rutas corregidas y limpieza automática de datos en `script.js`.
 
 **Siguiente (en este orden)**
-- [ ] Corregir rutas rotas de `projects.js` (problema 2).
 - [ ] Miniatura automática de YouTube cuando un proyecto tiene `video` de YouTube pero no `portada`
       (`https://img.youtube.com/vi/ID/maxresdefault.jpg`).
 - [ ] Reproducir `preview` en las tarjetas de la grilla al pasar el mouse (y en celular al entrar en pantalla),
