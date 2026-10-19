@@ -9,3 +9,5 @@ Reglas clave:
 - El creador solo edita `projects.js` y `assets/`; toda función nueva debe configurarse desde `projects.js`.
 - Comunicación y comentarios de código en español.
 - Al terminar una tarea, actualiza "Problemas conocidos" y "Estado y próximos pasos" en `README.md`.
+- Trabaja en una rama desde `main` y separa los PRs: uno de código y otro de documentación.
+- Para animaciones usa el agente `animaciones` (`.claude/agents/animaciones.md`). Ver "Agentes de IA" en `README.md`.
