@@ -74,7 +74,11 @@ nav a:hover{opacity:1;color:var(--rosa)}
 .caja p{opacity:.8;line-height:1.6;max-width:700px;margin-bottom:26px}
 .caja .vacio{aspect-ratio:16/9;display:grid;place-items:center;margin-bottom:14px;font-family:'Anton',Impact,sans-serif;font-size:clamp(30px,6vw,80px)}
 
-/* Cabecera de la ventana: con video, la portada se ve de "póster" hasta que el reproductor carga */
+/* Cabecera de la ventana: cabe entera en la pantalla (sin recortes ni scroll), centrada */
+.caja .medio{max-height:calc(100svh - 140px);margin-left:auto;margin-right:auto}
+.caja img.medio{width:auto;max-width:100%}
+.caja div.medio{width:min(100%,calc((100svh - 140px) * 16 / 9))}
+/* Con video, la portada se ve de "póster" hasta que el reproductor carga */
 .caja div.medio{position:relative;aspect-ratio:16/9;margin-bottom:14px;background:#111 center/cover}
 .caja div.medio iframe,.caja div.medio video{position:absolute;inset:0;height:100%;margin:0;object-fit:contain;opacity:0;transition:opacity .4s}
 .caja div.medio.listo iframe,.caja div.medio.listo video{opacity:1}
