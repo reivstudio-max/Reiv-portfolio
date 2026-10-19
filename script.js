@@ -124,7 +124,7 @@ function pintarModal(p){
   else cabeza = `<div class="vacio medio" style="background:${RELLENO[p.categoria]}">${p.titulo}</div>`;
   // onerror: si una imagen de la galería no existe se quita en vez de mostrar un ícono roto
   const fotos = galeria.map(g => `<img class="gal" src="${g}" alt="${p.titulo}" loading="lazy" onerror="this.remove()">`).join("");
-  $("caja").innerHTML = cabeza + fotos + `<div class="tag">${CATS[p.categoria]} — ${p.año}</div><h2 class="display">${p.titulo}</h2><p>${p.descripcion||""}</p>`;
+  $("caja").innerHTML = cabeza + fotos + `<div class="texto"><div class="tag">${CATS[p.categoria]} — ${p.año}</div><h2 class="display">${p.titulo}</h2><p>${p.descripcion||""}</p></div>`;
   return $("caja").querySelector(".medio");
 }
 
