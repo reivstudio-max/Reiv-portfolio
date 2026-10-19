@@ -6,7 +6,27 @@ const RELLENO = {
   Foto:"linear-gradient(160deg,#444,#0a0a0a 60%,#D1054F)"
 };
 const $ = id => document.getElementById(id);
-const fondo = p => p.portada ? `url('${p.portada}')` : RELLENO[p.categoria];
+
+/* ---------- LIMPIEZA DE DATOS ----------
+   Corrige errores comunes al escribir projects.js:
+   espacios sobrantes, rutas sin "assets/" y entradas vacías en galería. */
+function ruta(s){
+  s = String(s || "").trim();
+  if (!s) return "";
+  if (/^(https?:|\/\/|\/|data:|assets\/)/i.test(s)) return s;   // ya es una ruta completa o un link
+  if (/(youtu\.?be|vimeo\.com|www\.)/i.test(s)) return s;        // link sin "https://"
+  return "assets/" + s;
+}
+PROYECTOS.forEach(p => {
+  p.portada = ruta(p.portada);
+  p.preview = ruta(p.preview);
+  p.video   = ruta(p.video);
+  p.galeria = (p.galeria || []).map(ruta).filter(Boolean);
+});
+
+// La imagen va sobre el degradado: si no existe o no carga, se ve el color de relleno
+const css = s => s.replace(/'/g, "%27").replace(/"/g, "%22");
+const fondo = p => p.portada ? `url('${css(p.portada)}'), ${RELLENO[p.categoria]}` : RELLENO[p.categoria];
 
 /* ---------- GANCHO ---------- */
 const hero = $("inicio");
@@ -14,7 +34,7 @@ const dest = PROYECTOS.filter(p => p.destacado);
 let actual = 0, timer;
 hero.innerHTML = dest.map((p,i) => `
   <div class="slide" data-i="${i}">
-    ${p.preview ? `<video class="bg" src="${p.preview}" muted loop autoplay playsinline></video>`
+    ${p.preview ? `<video class="bg" src="${p.preview}" style="background:${fondo(p)} center/cover" muted loop autoplay playsinline></video>`
                 : `<div class="bg" style="background-image:${fondo(p)}"></div>`}
     <div class="txt">
       <div class="tag">${CATS[p.categoria]} — ${p.año}</div>
@@ -70,8 +90,9 @@ function embed(url){
 function abrir(p){
   let medios = "";
   if (p.video) medios += embed(p.video);
-  if (p.portada && !p.video) medios += `<img src="${p.portada}" alt="${p.titulo}">`;
-  (p.galeria||[]).forEach(g => medios += `<img src="${g}" alt="${p.titulo}" loading="lazy">`);
+  // onerror: si una imagen no existe se quita en vez de mostrar un ícono roto
+  if (p.portada && !p.video) medios += `<img src="${p.portada}" alt="${p.titulo}" onerror="this.remove()">`;
+  p.galeria.forEach(g => medios += `<img src="${g}" alt="${p.titulo}" loading="lazy" onerror="this.remove()">`);
   if (!medios) medios = `<div class="vacio" style="background:${RELLENO[p.categoria]}">${p.titulo}</div>`;
   $("caja").innerHTML = medios + `<div class="tag">${CATS[p.categoria]} — ${p.año}</div><h2 class="display">${p.titulo}</h2><p>${p.descripcion||""}</p>`;
   $("modal").classList.add("on");

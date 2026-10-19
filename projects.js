@@ -32,7 +32,7 @@ const PROYECTOS = [
     portada: "assets/1.jpg",
     preview: "",
     video: "",
-    galeria: [""],
+    galeria: [],
     destacado: true
   },
   {
@@ -40,7 +40,7 @@ const PROYECTOS = [
     categoria: "Video",
     año: 2026,
     descripcion: "Pega en 'video' un link de YouTube o Vimeo y se reproducirá dentro de la página.",
-    portada: "1.jpg",
+    portada: "assets/1.jpg",
     video: "",
     galeria: [],
     destacado: true
@@ -59,7 +59,7 @@ const PROYECTOS = [
     categoria: "Foto",
     año: 2025,
     descripcion: "Rodada en las Palmas",
-    portada: "assets/d.jpg  ",
+    portada: "assets/d.jpg",
     galeria: ["assets/p(1).jpg","assets/p(2).jpg","assets/p(3).jpg","assets/p(4).jpg","assets/p(5).jpg","assets/p(6).jpg",
               "assets/p(7).jpg","assets/p(8).jpg","assets/p(9).jpg","assets/p(10).jpg","assets/p(11).jpg","assets/p(12).jpg",
               "assets/p(13).jpg","assets/p(14).jpg","assets/p(15).jpg","assets/p(16).jpg","assets/p(17).jpg","assets/p(18).jpg",
