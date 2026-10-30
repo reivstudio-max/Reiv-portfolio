@@ -72,7 +72,7 @@ const PROYECTOS = [
    año: 2025,
    descripcion: "headsets 3d Modeling",
    portada: "assets/1retocada.jpg",
-   video: "assets/paig.mp4",
+   video: "",
    galeria: ["assets/2retocada.jpg"],
    destacado: true
   },
