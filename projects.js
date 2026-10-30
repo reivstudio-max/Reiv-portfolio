@@ -15,11 +15,11 @@
 */
 
 const PERFIL = {
-  email: "tucorreo@ejemplo.com",
+  email: "reivstudio@gmail.com",
   redes: [
-    { nombre: "Instagram", url: "https://instagram.com/tuusuario" },
-    { nombre: "Behance",   url: "https://behance.net/tuusuario" },
-    { nombre: "YouTube",   url: "https://youtube.com/@tuusuario" }
+    { nombre: "Instagram", url: "https://www.instagram.com/reivstudio/?hl=en" },
+    { nombre: "Behance",   url: "https://www.behance.net/Sant_RestrepoV" },
+    { nombre: "YouTube",   url: "https://www.youtube.com/@ReIvStudio" }
   ]
 };
 
@@ -29,10 +29,10 @@ const PROYECTOS = [
     categoria: "3D",
     año: 2026,
     descripcion: "giving a new look from stratocaster to something more heavy",
-    portada: "assets/1.jpg",
-    preview: "",
+    portada: "assets/5.jpg",
+    preview: "assets/vid1.mp4",
     video: "",
-    galeria: [],
+    galeria: ["assets/1.jpg","assets/2.jpg","assets/3.jpg","assets/4.jpg"],
     destacado: true
   },
   {
@@ -48,7 +48,7 @@ const PROYECTOS = [
   {
     titulo: "Wild Child: Tributo a Alexi Laiho",
     categoria: "Diseño",
-    año: 2025,
+    año: 2026,
     descripcion: "Diseño gráfico y composición hecho en Photoshop",
     portada: "assets/flyer.jpg",
     galeria: [],
@@ -57,7 +57,7 @@ const PROYECTOS = [
   {
     titulo: "Palmas",
     categoria: "Foto",
-    año: 2025,
+    año: 2026,
     descripcion: "Rodada en las Palmas",
     portada: "assets/d.jpg",
     galeria: ["assets/p(1).jpg","assets/p(2).jpg","assets/p(3).jpg","assets/p(4).jpg","assets/p(5).jpg","assets/p(6).jpg",
@@ -72,7 +72,7 @@ const PROYECTOS = [
    año: 2025,
    descripcion: "headsets 3d Modeling",
    portada: "assets/1retocada.jpg",
-   video: "",
+   video: "paig.mp4",
    galeria: ["assets/2retocada.jpg"],
    destacado: true
   },
