@@ -71,9 +71,9 @@ const PROYECTOS = [
    categoria: "3D",     
    año: 2025,
    descripcion: "headsets 3d Modeling",
-   portada: "assets/1IGRetocada.png",
+   portada: "assets/1IGRetocada.jpg",
    video: "assets/paig.mp4",
-   galeria: ["assets/2IGRetocada.png"],
+   galeria: ["assets/2IGRetocada.jpg"],
    destacado: true
   },
   { titulo: "Spot publicitario", categoria: "Video",  año: 2025, descripcion: "", portada: "", galeria: [], destacado: false },
