@@ -46,11 +46,11 @@ const PROYECTOS = [
     destacado: true
   },
   {
-    titulo: "Identidad de marca",
+    titulo: "Wild Child: Tributo a Alexi Laiho",
     categoria: "Diseño",
     año: 2025,
-    descripcion: "Logo, paleta y piezas gráficas para una marca.",
-    portada: "",
+    descripcion: "Diseño gráfico y composición hecho en Photoshop",
+    portada: "assets/flyer.jpg",
     galeria: [],
     destacado: true
   },
