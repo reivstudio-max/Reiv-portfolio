@@ -50,8 +50,8 @@ const PROYECTOS = [
     categoria: "Diseño",
     año: 2025,
     descripcion: "Diseño gráfico y composición hecho en Photoshop",
-    portada: "assets/lt.jpg",
-    galeria: ["assets/flyer.jpg"],
+    portada: "assets/flyer.jpg",
+    galeria: [],
     destacado: true
   },
   {
